@@ -15,7 +15,8 @@ public class StudentRepository {
     HashMap<String, Student> studentDb = new HashMap<>();
 
     HashMap<String, Teacher> teacherDb = new HashMap<>();
-    HashMap<String, String> studentTeacherPair = new HashMap<>();
+
+    HashMap<String, List<String>> teacherStudent = new HashMap<>();
 
     public String addStudent(Student student) {
         String key = student.getName();
@@ -30,7 +31,12 @@ public class StudentRepository {
     }
 
     public String addPair(String studentName, String teacherName) {
-        studentTeacherPair.put(studentName, teacherName);
+        List<String> students = teacherStudent.get(teacherName);
+        if (students == null) {
+            students = new ArrayList<>();
+        }
+        students.add(studentName);
+        teacherStudent.put(teacherName, students);
         return "Connected them successfully";
     }
 
@@ -52,48 +58,33 @@ public class StudentRepository {
         return null;
     }
 
-    public List<Student> findStudents(String teacherName) {
-        List<Student> students = new ArrayList<>();
+    public List<String> findStudents(String teacherName) {
 
-        for (Map.Entry<String, String> entry : studentTeacherPair.entrySet()) {
-            if (entry.getValue().equals(teacherName)) {
-                String studentName = entry.getKey();
-                for (Student student : studentDb.values()) {
-                    if (student.getName().equals(studentName)) {
-                        students.add(student);
-                    }
-                }
-            }
-        }
-        return students;
+        return teacherStudent.get(teacherName);
+
     }
 
-    public List<Student> findAllStudents() {
-        return studentDb.values().stream().toList();
+    public List<String> findAllStudents() {
+        return new ArrayList<>(studentDb.keySet());
     }
 
     public String deleteTeacher(String teacherName) {
-        teacherDb.remove(teacherName);
-        for (Map.Entry<String, String> entry : studentTeacherPair.entrySet()) {
-            if (entry.getValue().equals(teacherName)) {
-                String studentName = entry.getKey();
-                studentDb.remove(studentName);
-                studentTeacherPair.remove(studentName);
-            }
+
+        for (String studentName : teacherStudent.get(teacherName)) {
+            studentDb.remove(studentName);
         }
+        teacherDb.remove(teacherName);
+        teacherStudent.remove(teacherName);
         return "Teacher removed successfully";
     }
 
     public String deleteTeachers() {
         for (String teacherName : teacherDb.keySet()) {
-            teacherDb.remove(teacherName);
-            for (Map.Entry<String, String> entry : studentTeacherPair.entrySet()) {
-                if (entry.getValue().equals(teacherName)) {
-                    String studentName = entry.getKey();
-                    studentDb.remove(studentName);
-                    studentTeacherPair.remove(studentName);
-                }
+            for (String studentName : teacherStudent.get(teacherName)) {
+                studentDb.remove(studentName);
             }
+            teacherDb.remove(teacherName);
+            teacherStudent.remove(teacherName);
         }
         return "All teachers deleted";
     }

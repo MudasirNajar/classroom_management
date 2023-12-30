@@ -50,14 +50,14 @@ public class StudentController {
     }
 
     @GetMapping("/get-students-by-teacher-name/{teacher}")
-    public ResponseEntity<List<Student>> getStudentsByTeacherName(@PathVariable("teacher") String teacherName) {
-        List<Student> students = studentService.getStudentsByTeacherName(teacherName);
+    public ResponseEntity<List<String>> getStudentsByTeacherName(@PathVariable("teacher") String teacherName) {
+        List<String> students = studentService.getStudentsByTeacherName(teacherName);
         return new ResponseEntity<>(students, HttpStatus.FOUND);
     }
 
     @GetMapping("/get-all-students")
-    public ResponseEntity<List<Student>> getAllStudents() {
-        List<Student> allStudents = studentService.findAllStudents();
+    public ResponseEntity<List<String>> getAllStudents() {
+        List<String> allStudents = studentService.findAllStudents();
         return new ResponseEntity<>(allStudents, HttpStatus.FOUND);
     }
 

@@ -34,11 +34,11 @@ public class StudentService {
         return studentRepository.findTeacher(teacherName);
     }
 
-    public List<Student> getStudentsByTeacherName(String teacherName) {
+    public List<String> getStudentsByTeacherName(String teacherName) {
         return studentRepository.findStudents(teacherName);
     }
 
-    public List<Student> findAllStudents() {
+    public List<String> findAllStudents() {
         return studentRepository.findAllStudents();
     }
 
